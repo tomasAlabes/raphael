@@ -888,9 +888,15 @@ window.Raphael && window.Raphael.vml && function(R) {
     };
     var createNode;
     R._engine.initWin = function (win) {
-            var doc = win.document;
+        var doc = win.document;
+        if (doc.styleSheets.length < 31) {
             doc.createStyleSheet().addRule(".rvml", "behavior:url(#default#VML)");
-            try {
+        } else {
+            // no more room, add to the existing one
+            // http://msdn.microsoft.com/en-us/library/ms531194%28VS.85%29.aspx
+            doc.styleSheets[0].addRule(".rvml", "behavior:url(#default#VML)");
+        }
+        try {
                 !doc.namespaces.rvml && doc.namespaces.add("rvml", "urn:schemas-microsoft-com:vml");
                 createNode = function (tagName) {
                     return doc.createElement('<rvml:' + tagName + ' class="rvml">');
